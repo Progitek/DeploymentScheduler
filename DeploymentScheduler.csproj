@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SignAssembly>False</SignAssembly>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <ApplicationIcon>Images\Monitoring.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="AWS\**" />
+    <Compile Remove="PostGreSQL\**" />
+    <EmbeddedResource Remove="AWS\**" />
+    <EmbeddedResource Remove="PostGreSQL\**" />
+    <None Remove="AWS\**" />
+    <None Remove="PostGreSQL\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\Monitoring.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.IdentityManagement" Version="3.7.401.1" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.400.3" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.400.3" />
+    <PackageReference Include="AWSSDK.SSO" Version="3.7.400.3" />
+    <PackageReference Include="AWSSDK.SSOOIDC" Version="3.7.400.3" />
+    <PackageReference Include="Npgsql" Version="8.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Entities\Entities.csproj" />
+    <ProjectReference Include="AWS\AWS.csproj" />
+    <ProjectReference Include="PostGreSQL\PostGreSQL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
