@@ -103,11 +103,14 @@
             MenuItemServicesLog = new ToolStripMenuItem();
             toolStripSeparator3 = new ToolStripSeparator();
             MenuItemAgentsList = new ToolStripMenuItem();
+            gbTools = new GroupBox();
+            btnSql = new Button();
             ((System.ComponentModel.ISupportInitialize)pbConnectedAws).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbConnectedBD).BeginInit();
             gbFilterClinic.SuspendLayout();
             gbEnv.SuspendLayout();
             MenuContextualClinic.SuspendLayout();
+            gbTools.SuspendLayout();
             SuspendLayout();
             // 
             // lvGroupAndClinic
@@ -733,11 +736,32 @@
             MenuItemAgentsList.Text = "Agents List";
             MenuItemAgentsList.Click += MenuItemClinic_Click;
             // 
+            // gbTools
+            // 
+            gbTools.Controls.Add(btnSql);
+            gbTools.Location = new Point(483, 292);
+            gbTools.Name = "gbTools";
+            gbTools.Size = new Size(268, 207);
+            gbTools.TabIndex = 28;
+            gbTools.TabStop = false;
+            gbTools.Text = "Outils";
+            // 
+            // btnSql
+            // 
+            btnSql.Location = new Point(13, 22);
+            btnSql.Name = "btnSql";
+            btnSql.Size = new Size(75, 23);
+            btnSql.TabIndex = 0;
+            btnSql.Text = "Sql";
+            btnSql.UseVisualStyleBackColor = true;
+            btnSql.Click += btnSql_Click;
+            // 
             // DentitekDeploymentSchedulerGui
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1278, 858);
+            Controls.Add(gbTools);
             Controls.Add(gbFilterClinic);
             Controls.Add(btnGeneerateSchedule);
             Controls.Add(btnEditGroup);
@@ -770,6 +794,7 @@
             gbEnv.ResumeLayout(false);
             gbEnv.PerformLayout();
             MenuContextualClinic.ResumeLayout(false);
+            gbTools.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -850,5 +875,7 @@
         private ToolStripSeparator toolStripSeparator3;
         private RadioButton rbActive;
         private ColumnHeader Statut;
+        private GroupBox gbTools;
+        private Button btnSql;
     }
 }

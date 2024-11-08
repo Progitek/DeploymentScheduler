@@ -4,6 +4,7 @@ using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Amazon.S3.Model;
 using AWS;
+using Microsoft.VisualBasic;
 using PostGreSQL;
 using System;
 using System.ComponentModel;
@@ -25,6 +26,7 @@ namespace DeploymentScheduler
         private string? _LogFilename;
         private System.Windows.Forms.Timer _Timer = new System.Windows.Forms.Timer();
         private List<string>? _GroupsIdSelectedList = null;
+        private List<Entities.EntityGroup> _Groups = new List<Entities.EntityGroup>();
 
         public enum _ClinicRetrieveBy
         {
@@ -617,20 +619,21 @@ namespace DeploymentScheduler
             /*****************************************************************
              *   Retrieve and Display info about the Groups for deployment   *
              *****************************************************************/
-            DataTable? dtVersion = Database.GetData(SqlVersion, out ErrorMessage);
+            //            DataTable? dtVersion = Database.GetData(SqlVersion, out ErrorMessage);
 
-            cboForVersion.DataSource = null;
+            //            cboForVersion.DataSource = null;
 
-            if (dtVersion == null || !string.IsNullOrEmpty(ErrorMessage))
-            {
-                MessageBox.Show(ErrorMessage, "Erreur de lecture la liste des versions");
-                return;
-            }
+            //if (dtVersion == null || !string.IsNullOrEmpty(ErrorMessage))
+            //{
+            //    MessageBox.Show(ErrorMessage, "Erreur de lecture la liste des versions");
+            //    return;
+            //}
 
-            cboForVersion.DataSource = dtVersion;
-            cboForVersion.DisplayMember = "versionName";
-            cboForVersion.ValueMember = "versionName";
+            //cboForVersion.DataSource = dtVersion;
+            //cboForVersion.DisplayMember = "versionName";
+            //cboForVersion.ValueMember = "versionName";
 
+            PopulateVersionCombo();
             PopulateGroup();
             PopulateScheduler();
         }
@@ -1015,9 +1018,16 @@ namespace DeploymentScheduler
 
         private void rbVersion_Click(object sender, EventArgs e)
         {
+            PopulateVersionCombo();
             DisableControls();
             cboForVersion.Enabled = true;
             RefreshClinicList();
+        }
+
+        private void PopulateVersionCombo()
+        {
+            Action<List<string>?> callback = new Action<List<string>?>(ProcessBucketDirectoryForVersionDropDown);
+            S3.GetBucketDirectory("progitek-site-prod-cpz776-files", "update/", callback);
         }
 
         private void cboForVersion_SelectedIndexChanged(object sender, EventArgs e)
@@ -1077,6 +1087,41 @@ namespace DeploymentScheduler
             }
 
         }
+
+        private void ProcessBucketDirectoryForVersionDropDown(List<string>? BucketDirectory)
+        {
+            var Test = BucketDirectory;
+
+            _Groups.Clear();
+
+            if (BucketDirectory != null && BucketDirectory.Count > 0)
+            {
+                foreach (string DirName in BucketDirectory)
+                {
+                    Int64 ReleaseNoSort = -1;
+                    Int64 Output = -1;
+
+                    if (Int64.TryParse(DirName.Replace(".", ""), out Output))
+                    {
+                        ReleaseNoSort = Output;
+                    }
+
+                    _Groups.Add(new Entities.EntityGroup { ReleaseName = DirName, ReleaseNoSort = ReleaseNoSort });
+                }
+
+                if (_Groups.Count > 0)
+                {
+                    _Groups = _Groups.OrderByDescending(x => x.ReleaseNoSort).ToList();
+
+                    cboForVersion.DataSource = _Groups;
+                    cboForVersion.DisplayMember = "ReleaseName";
+                    cboForVersion.ValueMember = "ReleaseName";
+
+                    //                    SetGroupReleaseName();
+                }
+            }
+        }
+
 
         private void btnS3VersionList_Click(object sender, EventArgs e)
         {
@@ -1411,6 +1456,11 @@ namespace DeploymentScheduler
         private void rbActive_Click(object sender, EventArgs e)
         {
             RefreshClinicList();
+        }
+
+        private void btnSql_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("In development...");
         }
     }
 

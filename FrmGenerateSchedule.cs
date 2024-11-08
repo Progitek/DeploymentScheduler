@@ -1,4 +1,6 @@
-﻿using PostGreSQL;
+﻿using AWS;
+using Microsoft.VisualBasic;
+using PostGreSQL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,12 +46,17 @@ namespace DeploymentScheduler
                 return;
             }
 
-            cboVersionToInstall.DataSource = dtVersion;
-            cboVersionToInstall.DisplayMember = "versionName";
-            cboVersionToInstall.ValueMember = "versionName";
-            cboVersionToInstall.SelectedIndex = -1;
+            Action<List<string>?> callback = new Action<List<string>?>(ProcessBucketDirectory);
+            S3.GetBucketDirectory("progitek-site-prod-cpz776-files", "update/", callback);
+
+
+            //cboVersionToInstall.DataSource = dtVersion;
+            //cboVersionToInstall.DisplayMember = "versionName";
+            //cboVersionToInstall.ValueMember = "versionName";
+            //cboVersionToInstall.SelectedIndex = -1;
 
             GenerateSchedule();
+            DeployementStartDate_ValueChanged(DeployementStartDate, new EventArgs());
         }
 
         private void GenerateSchedule()
@@ -93,6 +100,41 @@ namespace DeploymentScheduler
                     StartDate = AddToSchedule("G04", StartDate, true);
                     StartDate = AddToSchedule("G05", StartDate, true);
                     break;
+            }
+        }
+
+        private void ProcessBucketDirectory(List<string>? BucketDirectory)
+        {
+            var Test = BucketDirectory;
+
+            List<Entities.EntityGroup> Groups = new List<Entities.EntityGroup>();
+
+            if (BucketDirectory != null && BucketDirectory.Count > 0)
+            {
+                foreach (string DirName in BucketDirectory)
+                {
+                    Int64 ReleaseNoSort = -1;
+                    Int64 Output = -1;
+
+                    if (Int64.TryParse(DirName.Replace(".", ""), out Output))
+                    {
+                        ReleaseNoSort = Output;
+                    }
+
+                    Groups.Add(new Entities.EntityGroup { ReleaseName = DirName, ReleaseNoSort = ReleaseNoSort });
+                }
+
+                if (Groups.Count > 0)
+                {
+                    Groups = Groups.OrderByDescending(x => x.ReleaseNoSort).ToList();
+
+                    cboVersionToInstall.DataSource = Groups;
+                    cboVersionToInstall.DisplayMember = "ReleaseName";
+                    cboVersionToInstall.ValueMember = "ReleaseName";
+                    cboVersionToInstall.SelectedIndex = -1;
+
+//                    SetGroupReleaseName();
+                }
             }
         }
 
