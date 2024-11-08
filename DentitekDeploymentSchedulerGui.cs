@@ -179,9 +179,9 @@ namespace DeploymentScheduler
         {
             _LogFilename = Application.StartupPath + @"\SchedulerDeployment.log";
 
-            _Images.Images.Add(Image.FromFile(@"..\Images\YellowLight.png"));
-            _Images.Images.Add(Image.FromFile(@"..\Images\GreenLight.png"));
-            _Images.Images.Add(Image.FromFile(@"..\Images\RedLight.png"));
+             _Images.Images.Add(Image.FromFile(@"Images\YellowLight.png"));
+            _Images.Images.Add(Image.FromFile(@"Images\GreenLight.png"));
+            _Images.Images.Add(Image.FromFile(@"Images\RedLight.png"));
 
             lvGroupAndClinic.View = View.Details;
             lvDeploymentSchedule.SmallImageList = _Images;
